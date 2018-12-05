@@ -346,9 +346,13 @@ def topology(geojson, quantization=1e6, simplification=0):
     arcs = dedup(quantized, lines, rings)
     arc_index = { (arc.a, arc.b): i for i, arc in enumerate(arcs) }
 
+    def do_simplify(arc):
+
+        return simplify(arc, simplification)
+
     if simplification > 0:
 
-        arcs = map(delta_encode, simplify(map(partial(arc_geometry, quantized), arcs), simplification))
+        arcs = map(delta_encode, map(do_simplify, map(partial(arc_geometry, quantized), arcs)))
 
     elif quantization > 1:
 
